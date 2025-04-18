@@ -35,101 +35,109 @@ class _HomePageState extends State<HomePage> {
     titleController.clear();
     descController.clear();
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setModalState) {
-            return ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(25), topLeft: Radius.circular(25)),
-              child: Container(
-                width: double.infinity,
-                color: Colors.green.withOpacity(0.8),
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                 isUpdate? Text(
-                   "Update Note",
-                   style: TextStyle(
-                       fontSize: 25, fontWeight: FontWeight.bold),
-                 ): Text(
-                      "Add Note",
-                      style: TextStyle(
-                          fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: titleController,
-                      decoration: InputDecoration(
-                        label: Text('Title*'),
-                        labelStyle: TextStyle(color: Colors.white),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: descController,
-                      maxLines: 4,
-                      decoration: InputDecoration(
-                        label: Text('Description*'),
-                        labelStyle: TextStyle(color: Colors.white),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(21),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    if (errorMsg.isNotEmpty)
-                      Text(
-                        errorMsg,
-                        style: TextStyle(color: Colors.red, fontSize: 17),
-                      ),
-                    Row(
+            return Padding(
+                padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,),
+              child: SingleChildScrollView(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(25), topLeft: Radius.circular(25)),
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.green.withOpacity(0.8),
+                    padding: EdgeInsets.all(8.0),
+                    child: Column(
+
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(color: Colors.black),
+                     isUpdate? Text(
+                       "Update Note",
+                       style: TextStyle(
+                           fontSize: 25, fontWeight: FontWeight.bold),
+                     ): Text(
+                          "Add Note",
+                          style: TextStyle(
+                              fontSize: 25, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            label: Text('Title*'),
+                            labelStyle: TextStyle(color: Colors.white),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(21),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(21),
+                            ),
                           ),
                         ),
-                        Spacer(),
-                        ElevatedButton(
-                          onPressed: () async {
-                            var Title = titleController.text.trim();
-                            var Desc = descController.text.trim();
-                            if (Title.isNotEmpty && Desc.isNotEmpty) {
-                              bool check =isUpdate?
-                              await dbRef!.updateNote(title: Title, desc: Desc, sno: sno):
-                            await dbRef!.addNote(mTitle: Title, mDesc: Desc);
-                              if (check) {
-                                getNotes();
-                              }
-                              Navigator.pop(context);
-                            } else {
-                              setModalState(() {
-                                errorMsg = "*Please fill all the required blanks";
-                              });
-                            }
-                          },
-                          child: Text(
-                            isUpdate?'Update Note':'Add Note',
-                            style: TextStyle(color: Colors.black),
+                        SizedBox(height: 20),
+                        TextField(
+                          controller: descController,
+                          maxLines: 4,
+                          decoration: InputDecoration(
+                            label: Text('Description*'),
+                            labelStyle: TextStyle(color: Colors.white),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(21),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(21),
+                            ),
                           ),
+                        ),
+                        SizedBox(height: 20),
+                        if (errorMsg.isNotEmpty)
+                          Text(
+                            errorMsg,
+                            style: TextStyle(color: Colors.red, fontSize: 17),
+                          ),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                            Spacer(),
+                            ElevatedButton(
+                              onPressed: () async {
+                                var Title = titleController.text.trim();
+                                var Desc = descController.text.trim();
+                                if (Title.isNotEmpty && Desc.isNotEmpty) {
+                                  bool check =isUpdate?
+                                  await dbRef!.updateNote(title: Title, desc: Desc, sno: sno):
+                                await dbRef!.addNote(mTitle: Title, mDesc: Desc);
+                                  if (check) {
+                                    getNotes();
+                                  }
+                                  Navigator.pop(context);
+                                } else {
+                                  setModalState(() {
+                                    errorMsg = "*Please fill all the required blanks";
+                                  });
+                                }
+                              },
+                              child: Text(
+                                isUpdate?'Update Note':'Add Note',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             );
